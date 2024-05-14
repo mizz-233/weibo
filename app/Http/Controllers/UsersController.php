@@ -3,7 +3,7 @@
  * @Author: mizz-233 3409133605@qq.com
  * @Date: 2024-05-13 15:20:08
  * @LastEditors: mizz-233 3409133605@qq.com
- * @LastEditTime: 2024-05-14 11:24:13
+ * @LastEditTime: 2024-05-14 11:30:26
  * @FilePath: \weibo\app\Http\Controllers\UsersController.php
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,12 +20,21 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
+            'except' => ['show', 'create', 'store', 'index']
+        ]);
+        $this->middleware('auth', [
             'except' => ['show', 'create', 'store']
         ]);
 
         $this->middleware('guest', [
             'only' => ['create']
         ]);
+    }
+    
+    public function index()
+    {
+        $users = User::all();
+        return view('users.index', compact('users'));
     }
 
     public function create()
@@ -63,7 +72,7 @@ class UsersController extends Controller
         return view('users.edit', compact('user'));
     }
 
-     public function update(User $user, Request $request)
+    public function update(User $user, Request $request)
     {
         $this->authorize('update', $user);
         $this->validate($request, [
