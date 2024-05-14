@@ -3,7 +3,7 @@
  * @Author: mizz-233 3409133605@qq.com
  * @Date: 2024-05-14 09:42:53
  * @LastEditors: mizz-233 3409133605@qq.com
- * @LastEditTime: 2024-05-14 14:17:28
+ * @LastEditTime: 2024-05-14 15:20:32
  * @FilePath: \weibo\app\Http\Controllers\SessionsController.php
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,6 +20,10 @@ class SessionsController extends Controller
     {
         $this->middleware('guest', [
             'only' => ['create']
+        ]);
+        // 限流 10 分钟十次
+        $this->middleware('throttle:10,10', [
+            'only' => ['store']
         ]);
     }
     public function create()

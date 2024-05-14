@@ -12,6 +12,16 @@ use Carbon\Carbon;
 
 class PasswordController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('throttle:2,1', [
+            'only' => ['showLinkRequestForm']
+        ]);
+        $this->middleware('throttle:3,10', [
+            'only' => ['sendResetLinkEmail']
+        ]);
+    }
+
     public function showLinkRequestForm()
     {
         return view('auth.passwords.email');
@@ -91,7 +101,7 @@ class PasswordController extends Controller
             }
 
             // 5.2. 检查是否正确
-            if ( ! Hash::check($token, $record['token'])) {
+            if (!Hash::check($token, $record['token'])) {
                 session()->flash('danger', '令牌错误');
                 return redirect()->back();
             }
@@ -108,5 +118,4 @@ class PasswordController extends Controller
         session()->flash('danger', '未找到重置记录');
         return redirect()->back();
     }
-
 }
