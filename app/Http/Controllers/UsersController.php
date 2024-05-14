@@ -3,7 +3,7 @@
  * @Author: mizz-233 3409133605@qq.com
  * @Date: 2024-05-13 15:20:08
  * @LastEditors: mizz-233 3409133605@qq.com
- * @LastEditTime: 2024-05-14 11:40:27
+ * @LastEditTime: 2024-05-14 11:58:40
  * @FilePath: \weibo\app\Http\Controllers\UsersController.php
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,9 +21,6 @@ class UsersController extends Controller
     {
         $this->middleware('auth', [
             'except' => ['show', 'create', 'store', 'index']
-        ]);
-        $this->middleware('auth', [
-            'except' => ['show', 'create', 'store']
         ]);
 
         $this->middleware('guest', [
@@ -90,5 +87,13 @@ class UsersController extends Controller
         session()->flash('success', '个人资料更新成功！');
 
         return redirect()->route('users.show', $user);
+    }
+
+    public function destroy(User $user)
+    {
+        $this->authorize('destroy', $user);
+        $user->delete();
+        session()->flash('success', '成功删除用户！');
+        return back();
     }
 }
