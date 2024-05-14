@@ -1,4 +1,12 @@
 <?php
+/*
+ * @Author: mizz-233 3409133605@qq.com
+ * @Date: 2024-05-13 15:20:08
+ * @LastEditors: mizz-233 3409133605@qq.com
+ * @LastEditTime: 2024-05-14 11:08:29
+ * @FilePath: \weibo\app\Http\Controllers\UsersController.php
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 
 namespace App\Http\Controllers;
 
@@ -13,10 +21,12 @@ class UsersController extends Controller
     {
         return view('users.create');
     }
+
     public function show(User $user)
     {
         return view('users.show', compact('user'));
     }
+
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -34,5 +44,29 @@ class UsersController extends Controller
         Auth::login($user);
         session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
         return redirect()->route('users.show', [$user]);
+    }
+
+    public function edit(User $user)
+    {
+        return view('users.edit', compact('user'));
+    }
+
+     public function update(User $user, Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:50',
+            'password' => 'nullable|confirmed|min:6'
+        ]);
+
+        $data = [];
+        $data['name'] = $request->name;
+        if ($request->password) {
+            $data['password'] = bcrypt($request->password);
+        }
+        $user->update($data);
+
+        session()->flash('success', '个人资料更新成功！');
+
+        return redirect()->route('users.show', $user);
     }
 }
