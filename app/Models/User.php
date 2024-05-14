@@ -1,4 +1,12 @@
 <?php
+/*
+ * @Author: mizz-233 3409133605@qq.com
+ * @Date: 2024-05-13 09:47:29
+ * @LastEditors: mizz-233 3409133605@qq.com
+ * @LastEditTime: 2024-05-14 14:05:33
+ * @FilePath: \weibo\app\Models\User.php
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 
 namespace App\Models;
 
@@ -7,10 +15,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +43,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->activation_token = Str::random(10);
+        });
+    }
     /**
      * The attributes that should be cast.
      *
